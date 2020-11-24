@@ -1,0 +1,87 @@
+/*
+#====================================================================#
+# Author:- Rahul C. Dcosta                             		     #
+# File Type :- Main Program File                                     #
+# Description:-Implemention of single variable polynomial in 2d array#
+# Date Created:-09/01/2014                             		     #
+# Date Modified:-14/01/2014                            		     #
+# Copyrights:- All Rights to Scroll_Of_Life Pvt.Ltd    		     #
+#====================================================================#
+*/
+#include <stdio.h>
+#include<string.h>
+#include "../include/functionproto.h"
+#define SIZE 30
+int main()
+{
+   char entry1[SIZE],entry2[SIZE],check[SIZE],ch;
+   int poly1[SIZE][2],poly2[SIZE][2],polyadd[SIZE][2],hold1=0,hold2=0,count1=0,count2=0,loop=0,choice=0,loop2=0;
+ do{
+  printf("\n---------------------------------------------------------------------------\nImplemention of single variable polynomial in 2d array \nOption available are  Add,Subtract,Multplication On Two Polynomial Equations\n---------------------------------------------------------------------------\nEnter your equation in the following format Ax^2+Bx+C \n where A,B,C are all constants \n use \"^\" (carrot==>(Shift+6))\n\n\nExample:-23x+40x+60x^900+566\n\nEnter your 1st equation\n\n");
+ 
+  do {
+  scanf("%s",entry1);
+  strcpy(check,entry1);
+  hold1=inputvalidate(check);
+  //printf("\nvalue of hold1=%d\n",hold1);
+   hold1==1 ? 1: printf("\nInValid poly please retype the equation\n") ;
+     }while(hold1!=1);
+  printf("\nNow \nEnter your 2nd equation\n");
+  do {
+       scanf("%s",entry2);
+   strcpy(check,entry2);
+   hold2=inputvalidate(check);
+  hold2==1 ? 1: printf("\nInValid poly please retype the equation\n") ;
+  }while(hold2!=1);
+
+ insertingdata(entry1,poly1,&count1);
+ insertingdata(entry2,poly2,&count2);
+ printf("\n------------\nData entered in array's Successfully\n------------\n"); 
+
+ inssort(count1,poly1);
+ inssort(count2,poly2);
+minimizeqn(&count1,poly1);
+minimizeqn(&count2,poly2);
+//printf("\n------------\nThe 1st array\n------------\n"); 
+//convertndisplay(count1,poly1);
+
+//printf("\n------------\nThe 2nd array\n------------\n");
+//convertndisplay(count2,poly2);
+
+printf("\n\n------------------------------------\nPlease select Option\n1.Addition\n2.Subtraction\n3.Multiplication\nEnter your choice\n");
+ scanf("%d",&choice);
+ switch(choice)
+{
+ case 1 : 
+     		addpolynomial(&count1,count2,poly1,poly2,polyadd);
+		printf("\n------------------------------------\nThe Resulting Polynomial after Addition\n------------------------------------\n");
+          	convertndisplay(count1,polyadd);
+              break;
+ case 2 :	
+		subpolynomial(&count1,count2,poly1,poly2,polyadd);
+		printf("\n------------------------------------\nThe Resulting Polynomial after  Subtraction\n------------------------------------\n");
+                convertndisplay(count1,polyadd);
+
+             break;
+ 
+ case 3 :
+		mulpolynomial(&count1,count2,poly1,poly2,polyadd);
+		printf("\n------------------------------------\nThe Resulting Polynomial after multiplication\n------------------------------------\n");
+           	convertndisplay(count1,polyadd);
+
+
+             break;
+
+ default : printf("\nInvalid Choice\n");
+           break;
+}
+
+printf("\nDo you wish to continue\n\nType Y-yes and N=-No\n");
+scanf("\n%c",&ch);
+  }while((ch == 'y') ||(ch == 'Y'));
+
+printf("\nThanks for using Program\n");
+ 
+
+
+} 

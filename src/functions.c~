@@ -1,0 +1,468 @@
+/*
+#====================================================================#
+# Author:- Rahul C. Dcosta                             		     #
+# File Type :- Functions File For poly.c                             #
+# Description:-Implemention of single variable polynomial in 2d array#
+# Date Created:-09/01/2014                             		     #
+# Date Modified:-14/01/2014                            		     #
+# Copyrights:- All Rights to Scroll_Of_Life Pvt.Ltd    		     #
+#====================================================================#
+*/
+#include <stdio.h>
+#include<string.h>
+#include "../include/functionproto.h"
+#define SIZE 30
+
+//--------------check------------//
+
+void check(char *vali,int *vc)
+{
+   int x=0,c,data;
+   
+  //---Poly Valid--//
+ 
+intvalid(vali,&data,&x);
+if(x==1)
+ { 
+    *vc=0;
+   printf("%s ==>is Not Valid\n",vali);
+  } else {
+    *vc=1;
+    //printf("%s ==>is  Valid\n",vali);
+
+  }
+
+}
+
+
+
+
+//-------poly Validation-------//
+int inputvalidate(char *entry)
+{
+   char * pch;
+   int vcount=0,finalv=0,loopcounter=0,len=0,i=0;
+len=strlen(entry);
+//------modifying----//
+for (i=0;i<len;i++)
+ {
+ if(entry[i]=='-' && entry[i-1] !='-')
+ {  
+   if(entry[i-1] =='^')
+    continue;
+    memmove(entry+i+1, entry+i, len-i+1);
+    entry[i]='+';
+    i=i+1;
+}
+    len=strlen(entry);
+}
+
+ //printf("\nThis is ==>%s\n",entry);
+   pch = strtok (entry,"+");
+while (pch != NULL)
+  {
+    //printf("\npch=%s\n",pch);
+    check(pch,&vcount);
+    //printf("\nvcount=%d\n",vcount);
+   vcount==1 ? finalv++,vcount=0 : finalv--;
+    pch = strtok (NULL, "+");
+    loopcounter++;
+     //printf("\nloopcounter=%d and finalv=%d \n",loopcounter,finalv);
+  }
+return ( loopcounter==finalv ? 1 : -1 ) ;
+ 
+
+
+}
+
+
+
+
+//------------poly Validation-----------//
+int intvalid(const char someinput[SIZE],int *value,int *p)
+{
+ int len,c=1,maxlen=0;
+   len = strlen(someinput);
+int i,digitc=0,garbage=0;
+
+   const char ch = '^';
+   char *ret;
+
+   ret = strchr(someinput,ch);
+   ret==NULL ? (maxlen=0) : (maxlen= strlen(ret));
+for(i=0;i < len ;i++)
+{
+  someinput[i]=='-' && someinput[i+1]=='-'  ?  digitc-- : 1 ;
+
+  if( someinput[len-maxlen]=='^' && someinput[len-maxlen-1]=='x' && isdigit(someinput[len-1]) )
+{ 
+   someinput[i]=='^' && someinput[i+1]=='-' ? digitc++ : 1 ; 
+  
+   if((i==len-maxlen-1) ||(i==len-maxlen))
+  {  digitc++; }
+  else 
+ {	someinput[i]=='^' && someinput[i+1]=='-' ? digitc++ : 1 ; 		
+   isdigit(someinput[i]) || someinput[0]== '-'  ? digitc++,isalpha(someinput[i]) || someinput[i]== '-' ? garbage++,garbage>1 ? digitc--:1 : 1 : 1 ;
+   
+ }
+  
+}
+ else if(someinput[len-1]=='x'&& someinput[len-2]!='x')
+{   
+
+   len--;
+    isdigit(someinput[i]) || someinput[0]== '-'  ? digitc++,isalpha(someinput[i]) || someinput[i]== '-' ? garbage++,garbage>1 ? digitc--:1 : 1 : 1 ;
+   
+}
+  else
+{
+   isdigit(someinput[i]) || someinput[0]== '-'  ? digitc++,isalpha(someinput[i]) || someinput[i]== '-'  ? garbage++,garbage>1 ? digitc--:1 : 1 : 1 ; 
+}
+
+}
+digitc==len ? *value=(atoi(someinput)),(*p=0):(*p=1);
+}
+
+
+//------------------//
+//------------Inserting data------------//
+int insertingdata(char *ent1,int p1[SIZE][2],int *send)
+
+{   
+char * pch;
+    int length=0,len=0,maxlen,i=0,j=0,coef=0,exp=0,bk=1;
+   const char ch = '^';
+   char *ret;
+  len=strlen(ent1);
+//------modifying----//
+for (i=0;i<len;i++)
+ {
+ if(ent1[i]=='-' && ent1[i-1] !='-')
+ {  
+   if(ent1[i-1] =='^')
+    continue;
+ memmove(ent1+i+1, ent1+i, len-i+1);
+    ent1[i]='+';
+    i=i+1;
+}
+    len=strlen(ent1);
+}
+//==================//
+   //printf("\ncustom string is %s\n\n",ent1);
+   i=0;
+pch = strtok (ent1,"+");
+while (pch != NULL)
+  {  //printf("\nValue at insert ==>pch=%s\n",pch);
+//======================================//
+      length=strlen(pch);
+      ret = strchr(pch, ch);
+      ret==NULL ? (maxlen=0) : (maxlen= strlen(ret));    
+   
+     if(pch[length-maxlen]=='^')
+    {   //printf("\nValue at insert ==>pch=%s\n",pch);
+        spliter(pch,&coef,&exp,&bk);
+        coef != 0 ? (p1[i][0]=coef),(p1[i][1]=exp) : i-- ;
+
+     }
+        else if (pch[length-1]=='x')
+     {  
+        pch[0]=='x'?  (p1[i][0]=1) : ( atoi(pch) != 0  ? (p1[i][0]=atoi(pch)) : i-- )     ;
+        p1[i][1]=1;
+       
+       //------------//
+      }  
+        else if ( ( isdigit(pch[length-1]) && isdigit(pch[0]) ) || pch[0]=='-' )
+     {  
+         atoi(pch) != 0 ? (p1[i][0]=atoi(pch)),(p1[i][1]=0) : i-- ;
+        }
+   
+     i++;
+     pch = strtok (NULL, "+");
+  } 
+  *send=i;
+//=====================================//    
+}
+///===============//
+int spliter(char *array,int *coeff, int *expo,int *loop)
+{
+	//printf("This is orginal==> %s",array);
+   int len=0,maxlen=0;
+   *coeff=0;
+   char string[1];
+      const char ch = '^';
+   char *ret;
+
+   ret = strchr(array, ch);
+   
+   len=strlen(array);
+   ret==NULL ? (maxlen=0) : (maxlen= strlen(ret));
+   array[0]== 'x' ? (*coeff =1) : ( atoi(array) != 0 ? (*coeff =atoi(array)) : *loop-- )    ;
+
+   if(array[len-maxlen]=='^')
+   {
+   	 memmove(ret,ret+1,maxlen);          
+   	 	 *expo=atoi(ret); 
+   	 }  
+ //printf("\ncoeff=%d and expo=%d\n",*coeff,atoi(ret)); 
+   return 0;
+}
+
+//-------sorting the Array------//
+void inssort(int ss,int ab[ss][2])
+{  int newa,newb,i,j,loop;
+   
+
+   for(i=1;i<ss;i++)
+  {   
+      newa=ab[i][1];
+      newb=ab[i][0];
+      j=i-1;
+      while((newa<ab[j][1])&&(j>=0))
+     { 
+     //printf("coeff=%d and expo=%d",ab[j][0],ab[j][1]);
+      ab[j+1][1]=ab[j][1];
+      ab[j+1][0]=ab[j][0];
+      
+          j=j-1;
+      }
+      ab[j+1][1]=newa;
+      ab[j+1][0]=newb;
+      
+  }
+   
+
+}
+
+//--------Reducing the Equation to Reperesent general Form-----------//
+int minimizeqn(int *cou,int poly[*cou][2])
+{
+    int loop1=0,loop2=0,exp=0,coeff=0,check=0,sum=0;
+   int tcount=0,matchcount=0;
+    
+   tcount=0;
+   for (loop1=0;loop1<*cou;loop1++)
+   {    
+       coeff=poly[loop1][0];
+       exp=poly[loop1][1];
+   //printf("\nbefore expo=%dand check=%d\n",exp,coeff); 
+          for(loop2=loop1+1;loop2<*cou;loop2++) 
+	{
+		if(exp==poly[loop2][1])
+		{	//coeff=0;
+                     coeff=coeff+poly[loop2][0];
+			matchcount++;
+		//printf("\nbefore expo=%dand coeff=%d\n",exp,coeff); 
+                 }
+		else {
+			//printf("\nloop2=%d Not Equal\n",loop2);
+	//printf("\ntcount=%d news flash *********expo=%dand coeff=%d\n",tcount,poly[tcount][1],poly[tcount][0]); 
+		break;
+			//
+			
+ 			
+ 			}
+
+
+
+		}   
+		poly[tcount][0]=coeff;
+		poly[tcount][1]=exp;
+      // printf("\ntcount=%d before expo=%dand coeff=%d\n",tcount,poly[tcount][1],poly[tcount][0]); 
+		coeff=0;
+		exp=0;
+		tcount++;
+		loop1=loop1+matchcount;
+		matchcount=0;
+
+  }
+   *cou=tcount;
+ //printf("\n\ntcount=%d and loop1=%d\n\n",tcount,loop1);
+  
+
+}
+
+
+//----------adding polynomial--//
+int addpolynomial(int *cou1,int cou2,int pol1[*cou1][2],int pol2[cou2][2],int poladd[SIZE][2])
+{   int loop1=0,loop2=0,coeff=0,exp=0,tcount=0,zero=0,check=0;
+//for (loop2=0;loop2<(*cou1);loop2++)
+ //  { 
+        
+//printf("\ni=%d coeff=%d  and expo=%d\n",loop2,pol1[loop2][0],pol1[loop2][1]);	
+// }
+
+
+
+     
+for (loop1=0;loop1<(*cou1);loop1++)
+   { 
+        poladd[loop1][0]=pol1[loop1][0];
+	poladd[loop1][1]=pol1[loop1][1];
+ }
+for (loop2=0;loop2<(cou2 + loop1);loop2++)
+   {  // printf("\nexec\n");
+        poladd[loop2+loop1][0]=pol2[loop2][0];
+	poladd[loop2+loop1][1]=pol2[loop2][1];
+ }
+  *cou1=*cou1+cou2;
+ inssort(*cou1,poladd);
+minimizeqn(&(*cou1),poladd);
+//printf("\n----Added Array---\n");
+ 
+}
+
+//--------subract polynomial------//
+int subpolynomial(int *cou1,int cou2,int pol1[*cou1][2],int pol2[cou2][2],int poladd[SIZE][2])
+{
+     int loop1=0,loop2=0,coeff=0,exp=0,tcount=0,zero=0,check=0;
+for (loop1=0;loop1<(*cou1);loop1++)
+   { 
+        poladd[loop1][0]=pol1[loop1][0];
+	poladd[loop1][1]=pol1[loop1][1];
+ }
+for (loop2=0;loop2<(cou2 + loop1);loop2++)
+   {  // printf("\nexec\n");
+        poladd[loop2+loop1][0]=(-1)*(pol2[loop2][0]);
+	poladd[loop2+loop1][1]=(pol2[loop2][1]);
+ }
+  *cou1=*cou1+cou2;
+ inssort(*cou1,poladd);
+minimizeqn(&(*cou1),poladd);
+
+
+ 
+}
+
+
+//-----------Multiplication polynomial -----------//
+int mulpolynomial(int *cou1,int cou2,int pol1[*cou1][2],int pol2[cou2][2],int poladd[SIZE][2])
+{
+     int loop1=0,loop2=0,coeff=0,exp=0,tcount=0,zero=0,check=0;
+for (loop1=0;loop1<(*cou1);loop1++)
+   { 
+        poladd[loop1][0]=pol1[loop1][0];
+	poladd[loop1][1]=pol1[loop1][1];
+ }
+for (loop2=0;loop2<(cou2 + loop1);loop2++)
+   {  // printf("\nexec\n");
+        poladd[loop2+loop1][0]=(pol2[loop2][0]);
+	poladd[loop2+loop1][1]=(pol2[loop2][1]);
+ }
+  *cou1=*cou1+cou2;
+ inssort(*cou1,poladd);
+//-------------------------------------------//
+   int matchcount=0;
+   loop1=0; 
+   tcount=loop1;
+   for (loop1=0;loop1<*cou1;loop1++)
+   {    
+       coeff=poladd[loop1][0];
+       exp=poladd[loop1][1];
+   // printf("\nbefore expo=%dand check=%d\n",exp,check); 
+    if(exp<=check && zero==1)      
+   { continue; }
+ 
+       //printf("\nafter expo=%d\n",exp);     
+     for (loop2=loop1+1;loop2<*cou1;loop2++)
+   {
+          if (exp==poladd[loop2][1]) 
+          { coeff=(poladd[loop2][0])*(coeff);
+           check=exp; 
+            matchcount++;}
+         if(check == 0 )
+         zero=1;
+    
+      }
+         poladd[tcount][0]=coeff;
+  	 poladd[tcount][1]=exp;
+        
+         //printf("\ntcount=%d coeff=%d and expo=%d\n",tcount,poladd[tcount][0],poladd[tcount][1]); 
+      if (loop2 == matchcount+1)
+        { tcount++;break; } 
+       tcount++;
+  }
+   
+ //printf("\n\ntcount=%d and loop1=%d\n\n",tcount,loop1);
+  
+ 
+ 
+  *cou1=tcount;
+  
+//-------------------------------------------// 
+}
+
+
+//--------------converting to String and display-------//
+void convertndisplay(int limit,int A[limit][2])
+{
+int i=0,j=0;
+char out[50];
+char holder[SIZE];
+  
+    for(i=0;i<limit;i++)
+{
+      for(j=0;j<2;j++)
+     {    
+      
+       sprintf(holder,"%d",A[i][j]);
+           strcat(out,holder);
+      
+      if(A[i][1]>1 || A[i][1]< 0)
+      {  
+	
+	sprintf(holder,"%s","x^");
+           strcat(out,holder);
+	sprintf(holder,"%d",A[i][1]);
+	strcat(out,holder);
+            break;
+       }
+
+
+
+       if(A[i][1]==1)
+      {  sprintf(holder,"%c",'x');
+           strcat(out,holder);
+            break;
+       } else 
+       {
+           if(A[i][1]==0)
+      {  
+            break;
+       }
+       }
+	}
+     if(i<limit-1) {
+      sprintf(holder,"%c",'+');
+           strcat(out,holder);
+      }
+}
+    
+  
+
+ //char ent1[] = "25+-2x";
+   //const char src[]  = "-";
+
+   int len=strlen(out);
+ // printf("i=%d just char=%s  length=%d\n\n",i,out,len);
+   //printf("Before memmove dest = %s\n", out);
+   for (i=0;i<len-1;i++)
+ {
+ if(out[i]=='-' && out[i-1] !='-')
+ {  
+   if(out[i-1] =='^')
+    continue; 
+ 	memmove(out+i-1, out+i, len-i);
+    //ent1[i]='+';
+    i=i+1;
+}
+    len=strlen(out);
+}
+//printf("i=%d just char=%s  length=%d\n\n",i,out,len);
+
+ printf("%s",out);
+
+ }  
+
+
+
+
